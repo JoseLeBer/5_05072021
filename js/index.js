@@ -12,7 +12,6 @@ fetch("http://localhost:3000/api/teddies")
   // on récupère un objet de type Array
   // on appelle ce Array "value" dans la prochaine fonction
   .then(function (value) {
-    console.log(value);
     displayTeddys(value);
   })
   .catch(function (error) {
@@ -34,14 +33,14 @@ function displayTeddys(value) {
 
     teddyBears.innerHTML += `
       <div class="col">
-        <div class="card"><a href="produit.html#${teddy._id}">
+        <div class="card"><a href="produit.html?_id=${teddy._id}">
           <div class="card-body">
             <img src="${teddy.imageUrl}" alt="${teddy.name}" class="img-fluid img-thumbnail">
             <h5 class="card-title">${teddy.name}</h5>
             <h5 class="card-title">${teddyPrice}</h5>
             <p class="card-text">${teddy.description}</p>
-          </div></a>
-        </div>
+          </div>
+          </a></div>
       </div>
     `;
   }

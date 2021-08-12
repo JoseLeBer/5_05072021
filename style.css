@@ -3,3 +3,6 @@ a,
   text-decoration: none;
   color: black;
 }
+.picture_item_in_basket {
+  max-width: 100%;
+}

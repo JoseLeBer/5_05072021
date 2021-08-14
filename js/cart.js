@@ -82,23 +82,19 @@ function displayForm() {
       <form id="customerForm">
         <div class="form-group">
           <label for="prenom">Prénom</label>
-          <input type="text" id="prenom" class="form-control" required />
+          <input type="text" id="prenom" class="form-control" pattern="[a-zA-ZÀ-ÿ]{1,20}" required />
         </div>
         <div class="form-group">
           <label for="nom">Nom</label>
-          <input type="text" id="nom" class="form-control" required />
+          <input type="text" id="nom" class="form-control" pattern="[a-zA-ZÀ-ÿ]{1,20}" required />
         </div>
         <div class="form-group">
           <label for="adresse">Adresse</label>
-          <input type="text" id="adresse" class="form-control" required />
-        </div>
-        <div class="form-group">
-          <label for="code_postal">Code Postal</label>
-          <input type="number" id="code_postal" class="form-control" required />
+          <input type="text" id="adresse" class="form-control" pattern="[0-9a-zA-ZÀ-ÿ ]{1,100}" required />
         </div>
         <div class="form-group">
           <label for="ville">Ville</label>
-          <input type="text" id="ville" class="form-control" required />
+          <input type="text" id="ville" class="form-control" pattern="[a-zA-ZÀ-ÿ]{1,20}" required />
         </div>
         <div class="form-group">
           <label for="email">Email</label>
@@ -110,15 +106,68 @@ function displayForm() {
   form.innerHTML = formStructure;
 }
 
-const sendForm = document.getElementById("send_form");
-console.log(sendForm);
-// const prenom = document.getElementById("prenom");
-// const nom = document.getElementById("nom");
-// const adresse = document.getElementById("adresse");
-// const codePostal = document.getElementById("code_postal");
-// const ville = document.getElementById("ville");
-// const email = document.getElementById("email");
+//
+// AddEventListener du bouton du formulaire pour récupérer ses valeurs puis les envoyer dans le localStorage
+//
 
+const sendForm = document.getElementById("send_form");
 sendForm.addEventListener("click", function (event) {
+  // const regexName = /^(([a-zA-ZÀ-ÿ]+[\s\-]{1}[a-zA-ZÀ-ÿ]+)|([a-zA-ZÀ-ÿ]+))$/;
+  // const regexCity = /^(([a-zA-ZÀ-ÿ]+[\s\-]{1}[a-zA-ZÀ-ÿ]+)|([a-zA-ZÀ-ÿ]+)){1,10}$/;
+  // const regexMail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-z]{2,4}$/;
+  // const regexAddress = /^(([a-zA-ZÀ-ÿ0-9]+[\s\-]{1}[a-zA-ZÀ-ÿ0-9]+)){1,10}$/;
+
   event.preventDefault();
+
+  // Récupération des valeurs du formulaire + ajout dans un objet
+  // let contact = {
+  //   firstName: document.getElementById("prenom").value,
+  //   lastName: document.getElementById("nom").value,
+  //   address: document.getElementById("adresse").value,
+  //   city: document.getElementById("ville").value,
+  //   email: document.getElementById("email").value,
+  // };
+
+  // Récupération des valeurs du panier + ajout dans un array
+  //let products = productSaveInLocalStorage;
+
+  // Déclaration d'une constante "order" contenant l'objet "contact" + l'array "products"
+  let products = [];
+  for (product of productSaveInLocalStorage) {
+    products.push(product.productId);
+  }
+
+  const order = {
+    contact: {
+      firstName: document.getElementById("prenom").value,
+      lastName: document.getElementById("nom").value,
+      address: document.getElementById("adresse").value,
+      city: document.getElementById("ville").value,
+      email: document.getElementById("email").value,
+    },
+    products: products,
+  };
+
+  //
+  // ---------- Envoi des données contenues dans "order" au back-end via fetch et la méthode "post" ---------- \\
+  //
+  fetch("http://localhost:3000/api/teddies/order", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(order),
+  })
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (value) {
+      if (value.orderId != undefined) {
+        //localStorage.removeItem('xxxx') localStorage.trash('panier') - vider le panier
+        console.log(value);
+        localStorage.setItem("orderID", JSON.stringify(value.orderId));
+        document.location.href = "order_confirmation.html";
+        //?orderId=" + value.orderId;
+      }
+    });
 });

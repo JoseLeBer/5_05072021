@@ -143,6 +143,8 @@ sendForm.addEventListener("click", function (event) {
     (regexCity.test(contact.city) == true) &
     (regexMail.test(contact.email) == true)
   ) {
+    event.preventDefault();
+
     //
     // ---------- Envoi des données contenues dans "contact" + "products" au back-end via fetch et la méthode "post" ---------- \\
     //

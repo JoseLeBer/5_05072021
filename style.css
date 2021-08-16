@@ -1,8 +1,23 @@
-a,
-.nav-link {
+a {
   text-decoration: none;
   color: black;
 }
+a:hover {
+  color: black;
+}
+.header-bg-color {
+  background-color: #2d2d2d;
+}
+.header-color {
+  color: white;
+}
+.header-color:hover {
+  color: white;
+}
 .picture_item_in_basket {
   max-width: 100%;
+}
+.footer-bg-color {
+  background-color: #dbdbdb;
+  font-size: 8px;
 }

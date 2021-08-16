@@ -106,68 +106,64 @@ function displayForm() {
   form.innerHTML = formStructure;
 }
 
+// Déclaration des regex qui nous serviront à valider les données avant l'envoi au serveur
+const regexName = /^(([a-zA-ZÀ-ÿ]+[\s\-]{1}[a-zA-ZÀ-ÿ]+)|([a-zA-ZÀ-ÿ]+))$/;
+const regexAddress = /^(([a-zA-ZÀ-ÿ0-9]+[\s\-]{1}[a-zA-ZÀ-ÿ0-9]+)){1,10}$/;
+const regexCity =
+  /^(([a-zA-ZÀ-ÿ]+[\s\-]{1}[a-zA-ZÀ-ÿ]+)|([a-zA-ZÀ-ÿ]+)){1,10}$/;
+const regexMail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-z]{2,4}$/;
+
 //
 // AddEventListener du bouton du formulaire pour récupérer ses valeurs puis les envoyer dans le localStorage
 //
-
 const sendForm = document.getElementById("send_form");
 sendForm.addEventListener("click", function (event) {
-  // const regexName = /^(([a-zA-ZÀ-ÿ]+[\s\-]{1}[a-zA-ZÀ-ÿ]+)|([a-zA-ZÀ-ÿ]+))$/;
-  // const regexCity = /^(([a-zA-ZÀ-ÿ]+[\s\-]{1}[a-zA-ZÀ-ÿ]+)|([a-zA-ZÀ-ÿ]+)){1,10}$/;
-  // const regexMail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-z]{2,4}$/;
-  // const regexAddress = /^(([a-zA-ZÀ-ÿ0-9]+[\s\-]{1}[a-zA-ZÀ-ÿ0-9]+)){1,10}$/;
+  //event.preventDefault();
 
-  event.preventDefault();
+  // Récupération des valeurs du formulaire + ajout dans un objet que l'on nomme "contact"
+  let contact = {
+    firstName: document.getElementById("prenom").value,
+    lastName: document.getElementById("nom").value,
+    address: document.getElementById("adresse").value,
+    city: document.getElementById("ville").value,
+    email: document.getElementById("email").value,
+  };
 
-  // Récupération des valeurs du formulaire + ajout dans un objet
-  // let contact = {
-  //   firstName: document.getElementById("prenom").value,
-  //   lastName: document.getElementById("nom").value,
-  //   address: document.getElementById("adresse").value,
-  //   city: document.getElementById("ville").value,
-  //   email: document.getElementById("email").value,
-  // };
-
-  // Récupération des valeurs du panier + ajout dans un array
-  //let products = productSaveInLocalStorage;
-
-  // Déclaration d'une constante "order" contenant l'objet "contact" + l'array "products"
+  // Récupération de l'id des produits présents dans le panier + ajout dans un array que l'on nomme "products"
   let products = [];
   for (product of productSaveInLocalStorage) {
     products.push(product.productId);
   }
 
-  const order = {
-    contact: {
-      firstName: document.getElementById("prenom").value,
-      lastName: document.getElementById("nom").value,
-      address: document.getElementById("adresse").value,
-      city: document.getElementById("ville").value,
-      email: document.getElementById("email").value,
-    },
-    products: products,
-  };
-
-  //
-  // ---------- Envoi des données contenues dans "order" au back-end via fetch et la méthode "post" ---------- \\
-  //
-  fetch("http://localhost:3000/api/teddies/order", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(order),
-  })
-    .then(function (response) {
-      return response.json();
+  // Validation des données de l'objet "contact" grâce au regex
+  if (
+    (regexName.test(contact.firstName) == true) &
+    (regexName.test(contact.lastName) == true) &
+    (regexAddress.test(contact.address) == true) &
+    (regexCity.test(contact.city) == true) &
+    (regexMail.test(contact.email) == true)
+  ) {
+    //
+    // ---------- Envoi des données contenues dans "contact" + "products" au back-end via fetch et la méthode "post" ---------- \\
+    //
+    fetch("http://localhost:3000/api/teddies/order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ contact, products }),
     })
-    .then(function (value) {
-      if (value.orderId != undefined) {
-        //localStorage.removeItem('xxxx') localStorage.trash('panier') - vider le panier
-        console.log(value);
-        localStorage.setItem("orderID", JSON.stringify(value.orderId));
-        document.location.href = "order_confirmation.html";
-        //?orderId=" + value.orderId;
-      }
-    });
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (value) {
+        if (value.orderId != undefined) {
+          //localStorage.removeItem('xxxx') localStorage.trash('panier') - vider le panier
+          console.log(value);
+          localStorage.setItem("orderID", JSON.stringify(value.orderId));
+          document.location.href = "order_confirmation.html";
+          // jerome : à la fin de l'adresse ?orderId=" + value.orderId;
+        }
+      });
+  }
 });

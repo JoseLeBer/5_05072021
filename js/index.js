@@ -1,29 +1,32 @@
-// Lister les fonctions ; Une fonction par fonctionalité
-// 1ère fonction : Récupérer les informations produits de l'API
-// 2ème fonction : Ajouter les informations produits dans le DOM
+const teddyBears = document.getElementById("teddybears");
 
-// 1ère fonction
-//function getDataFromApi() {
+main();
 
-fetch("http://localhost:3000/api/teddies")
-  .then(function (response) {
-    return response.json();
-  })
-  // on récupère un objet de type Array
-  // on appelle ce Array "value" dans la prochaine fonction
-  .then(function (value) {
-    displayTeddys(value);
-  })
-  .catch(function (error) {
-    console.log("error");
-  });
+// Fonction globale
+function main() {
+  getDataFromApi();
+}
 
-//}
+// Fonction qui fait une requête fetch avec la méthode "get" pour récupérer les données du back-end
+function getDataFromApi() {
+  fetch("http://localhost:3000/api/teddies")
+    .then(function (response) {
+      return response.json();
+    })
+    .then(function (value) {
+      // On appelle une autre fonction "displayTeddys" qui reprend en paramètre les données du back-end
+      console.log(value);
+      displayTeddys(value);
+    })
+    .catch(function () {
+      teddyBears.innerHTML =
+        "Une erreur est survenue, nous n'avons pas pu charger la page.<br> Veuillez réessayer ultérieurement.<br> Si l'erreur persite, veuillez contacter le service technique.";
+    });
+}
 
-// 2ème fonction
-
+// Fonction qui affiche de manière dynamique les produits dans le DOM
 function displayTeddys(value) {
-  const teddyBears = document.getElementById("teddybears");
+  // On itère le array "value" pour afficher autant de produit que contient le array
   for (teddy of value) {
     let price = teddy.price / 100;
     let teddyPrice = new Intl.NumberFormat("fr-FR", {

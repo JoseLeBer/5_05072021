@@ -160,11 +160,9 @@ sendForm.addEventListener("click", function (event) {
       })
       .then(function (value) {
         if (value.orderId != undefined) {
-          //localStorage.removeItem('xxxx') localStorage.trash('panier') - vider le panier
           console.log(value);
           localStorage.setItem("orderID", JSON.stringify(value.orderId));
           document.location.href = "order_confirmation.html";
-          // jerome : à la fin de l'adresse ?orderId=" + value.orderId;
         }
       });
   }

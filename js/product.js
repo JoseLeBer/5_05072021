@@ -92,13 +92,3 @@ document.addEventListener("click", function (event) {
     }
   }
 });
-
-// function addToCart(value) {
-//   //Sélection du bouton "Ajouter au panier"
-//   const cartButton = document.getElementById("cart");
-
-//   //Écouter le bouton et envoyer au panier
-//   cartButton.addEventListener("click", function (event) {
-
-//   });
-// }

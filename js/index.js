@@ -15,7 +15,6 @@ function getDataFromApi() {
     })
     .then(function (value) {
       // On appelle une autre fonction "displayTeddys" qui reprend en paramètre les données du back-end
-      console.log(value);
       displayTeddys(value);
     })
     .catch(function () {

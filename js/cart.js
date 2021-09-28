@@ -73,7 +73,6 @@ else {
 
 //
 // ---------- FONCTION affichant le formulaire de commande  ---------- \\
-//
 
 function displayForm() {
   const form = document.getElementById("form");

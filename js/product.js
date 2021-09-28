@@ -31,7 +31,6 @@ function getProducts() {
     });
 }
 
-// ---> Peut-être utiliser current product à la place de value et donc sortir cette fonction du 2eme then
 // Fonction qui affiche de manière dynamique les informations produits dans la page produit.html
 function displayTeddy(value) {
   // Variable permettant de transormer le prix en format xx€
@@ -53,8 +52,6 @@ function displayTeddy(value) {
   teddyColor.innerHTML += `${selectColor}`;
 }
 
-// ---> Peut-être inserer tout le reste dans une fonction ???
-// capter un bouton créer de manière dynamique dans le DOM !!!!!!! a revoir
 document.addEventListener("click", function (event) {
   if (event.target.id === "cart") {
     event.preventDefault();

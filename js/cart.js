@@ -15,23 +15,36 @@ if (productSaveInLocalStorage === null) {
     `;
   cart.innerHTML = emptyCart;
 }
+
 // Si le panier contient un/des article(s)
 else {
-  let cartStructure = `<div class="row">MON PANIER</div>`;
-  for (item of productSaveInLocalStorage) {
+  let cartStructure = `<div class="row mon_panier">MON PANIER</div>`;
+  for (item in productSaveInLocalStorage) {
     cartStructure += `
-        <div class="row">
+        <div class="row article_in_cart">
           <div class="col-3">
             <img src="${
-              item.productPicture
+              productSaveInLocalStorage[item].productPicture
             }" alt="Illustration de l'ours en peluche ${
-      item.productName
+      productSaveInLocalStorage[item].productName
     }" class="picture_item_in_basket" />
           </div>
           <div class="col">
-            <div class="row">${item.productName}</div>
-            <div class="row">${item.productPrice / 100 + " €"}</div>
-            <div class="row">Quantité 1</div>
+            <div class="row">${
+              productSaveInLocalStorage[item].productName
+            }</div>
+            <div class="row">${
+              productSaveInLocalStorage[item].productPrice / 100 + " €"
+            }</div>
+            <div class="row">Quantité : ${
+              productSaveInLocalStorage[item].numberOfProduct
+            }
+              <select>
+              </select>
+            </div>
+            <button data-name="${
+              productSaveInLocalStorage[item].productName
+            }" class="delete__button">Supprimer</button>
           </div>
         </div>
         `;
@@ -45,8 +58,11 @@ else {
   let arrayTotalCartPrice = [];
 
   // Instruction "for...of" afin de récuperer les prix du panier
-  for (item of productSaveInLocalStorage) {
-    let priceProductInCart = item.productPrice / 100;
+  for (item in productSaveInLocalStorage) {
+    let priceProductInCart =
+      (productSaveInLocalStorage[item].productPrice *
+        productSaveInLocalStorage[item].numberOfProduct) /
+      100;
 
     // Mettre les prix du panier dans la variable "arrayTotalCartPrice"
     arrayTotalCartPrice.push(priceProductInCart);
@@ -61,12 +77,43 @@ else {
   //
 
   cartStructure += `
-    <div class="row">
-        <div class="col-8">TOTAL</div>
+    <div class="row total_price">
+        <div class="col-8 total">TOTAL</div>
         <div class="col-4">${totalPrice + " €"}</div>
+        <button type="button" class="btn btn-danger clear_cart">Vider le panier</button>
     </div>
     `;
   cart.innerHTML = cartStructure;
+
+  // Partie boutons "supprimer un article"
+  const deleteBtn = document.querySelectorAll(".delete__button");
+  document.addEventListener("click", (e) => {
+    console.log("ici");
+    if (e.target.closest(".delete__button")) {
+      console.log(e.target.getAttribute("data-name"));
+      localStorage.removeItem(e.target.getAttribute("data-name"));
+      // il faut déboucler tout le tableau produit qui est dans le localstorage
+      // si le dataname correspond a la clé que je vois dans ma boucle, alors il faut supprimer l'élément du tableau
+      // et ensuite il faut resauvegarder l'ensemble des produits dans le local storage
+    }
+  });
+  // for (article of deleteBtn) {
+  //   article.addEventListener("click", function (event) {
+  //     event.preventDefault();
+  //     let selectedProductId = productSaveInLocalStorage[article].productName;
+  //     console.log(selectedProductId);
+  //   });
+  // }
+
+  //console.log(deleteBtn);
+
+  // Partie bouton "vider le panier"
+  const clearCart = document.querySelector(".clear_cart");
+  clearCart.addEventListener("click", function (event) {
+    localStorage.clear();
+    alert("Le panier a été vidé");
+    window.location.href = "cart.html";
+  });
 
   displayForm();
 }
@@ -77,30 +124,32 @@ else {
 function displayForm() {
   const form = document.getElementById("form");
   const formStructure = `
-    <div class="row">ADRESSE DE LIVRAISON</div>
-      <form id="customerForm">
-        <div class="form-group">
-          <label for="prenom">Prénom</label>
-          <input type="text" id="prenom" class="form-control" pattern="[a-zA-ZÀ-ÿ]{1,20}" required />
-        </div>
-        <div class="form-group">
-          <label for="nom">Nom</label>
-          <input type="text" id="nom" class="form-control" pattern="[a-zA-ZÀ-ÿ]{1,20}" required />
-        </div>
-        <div class="form-group">
-          <label for="adresse">Adresse</label>
-          <input type="text" id="adresse" class="form-control" pattern="[0-9a-zA-ZÀ-ÿ ]{1,100}" required />
-        </div>
-        <div class="form-group">
-          <label for="ville">Ville</label>
-          <input type="text" id="ville" class="form-control" pattern="[a-zA-ZÀ-ÿ]{1,20}" required />
-        </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" class="form-control" required />
-        </div>
-        <button id="send_form" type="submit" class="btn btn-success">COMMANDER</button>
-      </form>
+    <div class="form">
+      <div class="row shipping_address">ADRESSE DE LIVRAISON</div>
+        <form id="customerForm">
+          <div class="form-group">
+            <label for="prenom">Prénom</label>
+            <input type="text" id="prenom" class="form-control" pattern="[a-zA-ZÀ-ÿ]{1,20}" required />
+          </div>
+          <div class="form-group">
+            <label for="nom">Nom</label>
+            <input type="text" id="nom" class="form-control" pattern="[a-zA-ZÀ-ÿ]{1,20}" required />
+          </div>
+          <div class="form-group">
+            <label for="adresse">Adresse</label>
+            <input type="text" id="adresse" class="form-control" pattern="[0-9a-zA-ZÀ-ÿ ]{1,100}" required />
+          </div>
+          <div class="form-group">
+            <label for="ville">Ville</label>
+            <input type="text" id="ville" class="form-control" pattern="[a-zA-ZÀ-ÿ]{1,20}" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" class="form-control" required />
+          </div>
+          <button id="send_form" type="submit" class="btn btn-success btn_form">COMMANDER</button>
+        </form>
+      </div>
     `;
   form.innerHTML = formStructure;
 }
@@ -130,8 +179,8 @@ sendForm.addEventListener("click", function (event) {
 
   // Récupération de l'id des produits présents dans le panier + ajout dans un array que l'on nomme "products"
   let products = [];
-  for (product of productSaveInLocalStorage) {
-    products.push(product.productId);
+  for (product in productSaveInLocalStorage) {
+    products.push(productSaveInLocalStorage[product].productId);
   }
 
   // Validation des données de l'objet "contact" grâce au regex

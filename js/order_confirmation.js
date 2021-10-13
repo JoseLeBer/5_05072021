@@ -9,4 +9,5 @@ function main() {
 function displayOrder() {
   const orderId = document.getElementById("order_id");
   orderId.innerText = productSaveInLocalStorage;
+  localStorage.clear();
 }

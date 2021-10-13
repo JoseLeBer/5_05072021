@@ -21,3 +21,52 @@ a:hover {
   background-color: #dbdbdb;
   font-size: 8px;
 }
+.mon_panier {
+  font-weight: bold;
+  font-size: 1.7em;
+  padding-left: 5%;
+  margin-bottom: 20px;
+  background-color: white;
+}
+.article_in_cart {
+  background-color: white;
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+.total_price {
+  background-color: white;
+  margin-top: 20px;
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+.total {
+  font-weight: bold;
+  font-size: 1.7em;
+}
+
+.container_form {
+  background-color: white;
+  margin-top: 20px;
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+.shipping_address {
+  font-weight: bold;
+  font-size: 1.7em;
+}
+
+.btn_form {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.clear_cart {
+  margin-top: 20px;
+}
+
+main {
+  background-color: rgb(222, 222, 222);
+}

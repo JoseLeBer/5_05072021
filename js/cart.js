@@ -1,5 +1,14 @@
-// Déclaration d'une variable dans laquelle il y a les clés/valeurs du localStorage
-let productSaveInLocalStorage = JSON.parse(localStorage.getItem("product"));
+// Déclaration d'une variable dans laquelle on injectera les données du localStorage
+let productSaveInLocalStorage = [];
+let keysSaveInLocalStorage = "";
+
+for (let i = 0; i < localStorage.length; i++) {
+  keysSaveInLocalStorage = JSON.parse(
+    localStorage.getItem(localStorage.key(i))
+  );
+  // Variable dans laquelle il y a les clés/valeurs du localStorage
+  productSaveInLocalStorage.push(keysSaveInLocalStorage);
+}
 
 //
 // ---------- AFFICHAGE DYNAMIQUE DU PANIER ---------- \\
@@ -9,7 +18,7 @@ let productSaveInLocalStorage = JSON.parse(localStorage.getItem("product"));
 const cart = document.getElementById("cart");
 
 // Si le panier est vide
-if (productSaveInLocalStorage === null) {
+if (productSaveInLocalStorage.length == 0) {
   const emptyCart = `
     <div class="row">Votre panier est actuellement vide.</div>
     `;
@@ -36,15 +45,17 @@ else {
             <div class="row">${
               productSaveInLocalStorage[item].productPrice / 100 + " €"
             }</div>
-            <div class="row">Quantité : ${
-              productSaveInLocalStorage[item].numberOfProduct
-            }
-              <select>
-              </select>
+            <div class="row"><button data-name="${
+              productSaveInLocalStorage[item].productName
+            }" class="btn btn-dark less_btn bouton_panier">-</button>Quantité : ${
+      productSaveInLocalStorage[item].numberOfProduct
+    }<button data-name="${
+      productSaveInLocalStorage[item].productName
+    }" class="btn btn-dark plus_btn bouton_panier">+</button>
             </div>
             <button data-name="${
               productSaveInLocalStorage[item].productName
-            }" class="delete__button">Supprimer</button>
+            }" class="btn btn-dark delete__button">Supprimer</button>
           </div>
         </div>
         `;
@@ -85,27 +96,49 @@ else {
     `;
   cart.innerHTML = cartStructure;
 
+  // Partie boutons -
+  document.addEventListener("click", (e) => {
+    if (e.target.closest(".less_btn")) {
+      let less = JSON.parse(
+        localStorage.getItem(e.target.getAttribute("data-name"))
+      );
+      less.numberOfProduct -= 1;
+      if (less.numberOfProduct < 1) {
+        localStorage.removeItem(e.target.getAttribute("data-name"));
+      } else {
+        localStorage.setItem(
+          e.target.getAttribute("data-name"),
+          JSON.stringify(less)
+        );
+      }
+      window.location.href = "cart.html";
+    }
+  });
+
+  // Partie boutons +
+  document.addEventListener("click", (e) => {
+    if (e.target.closest(".plus_btn")) {
+      let plus = JSON.parse(
+        localStorage.getItem(e.target.getAttribute("data-name"))
+      );
+      plus.numberOfProduct += 1;
+      localStorage.setItem(
+        e.target.getAttribute("data-name"),
+        JSON.stringify(plus)
+      );
+      window.location.href = "cart.html";
+    }
+  });
+
   // Partie boutons "supprimer un article"
   const deleteBtn = document.querySelectorAll(".delete__button");
   document.addEventListener("click", (e) => {
-    console.log("ici");
     if (e.target.closest(".delete__button")) {
-      console.log(e.target.getAttribute("data-name"));
       localStorage.removeItem(e.target.getAttribute("data-name"));
-      // il faut déboucler tout le tableau produit qui est dans le localstorage
-      // si le dataname correspond a la clé que je vois dans ma boucle, alors il faut supprimer l'élément du tableau
-      // et ensuite il faut resauvegarder l'ensemble des produits dans le local storage
+      alert("L'article a été supprimer de votre panier");
+      window.location.href = "cart.html";
     }
   });
-  // for (article of deleteBtn) {
-  //   article.addEventListener("click", function (event) {
-  //     event.preventDefault();
-  //     let selectedProductId = productSaveInLocalStorage[article].productName;
-  //     console.log(selectedProductId);
-  //   });
-  // }
-
-  //console.log(deleteBtn);
 
   // Partie bouton "vider le panier"
   const clearCart = document.querySelector(".clear_cart");

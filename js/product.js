@@ -17,7 +17,7 @@ function main() {
   getProducts();
 }
 
-// Fonction qui appelle l'API et récupère ses données
+// Fonction "getProducts" qui appelle l'API et récupère ses données
 function getProducts() {
   fetch(`http://localhost:3000/api/teddies/${id}`)
     .then(function (response) {
@@ -34,7 +34,7 @@ function getProducts() {
     });
 }
 
-// Fonction qui affiche de manière dynamique les informations produits dans la page produit.html
+// Fonction "displayTeddy" qui affiche dynamiquement les informations produits dans la page produit.html
 function displayTeddy(value) {
   // Variable permettant de transormer le prix en format xx€
   let price = new Intl.NumberFormat("fr-FR", {
@@ -55,14 +55,16 @@ function displayTeddy(value) {
   teddyColor.innerHTML += `${selectColor}`;
 }
 
+// AddEventListener qui écoute le clic sur le bouton "Ajouter au panier"
 document.addEventListener("click", function (event) {
   if (event.target.id === "cart") {
     event.preventDefault();
 
-    //ESSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIIIIIIIIIIIIIIIIIIIIIIIIIIII
+    // ESSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIIIIIIIIIIIIIIIIIIIIIIIIIIII ajout du choix de la couleur du teddy dans la variable optionSelect //
     const optionSelect = teddyColor.options[teddyColor.selectedIndex].text;
+    //
 
-    // Récupération des valeurs
+    // Création de l'objet "productInformation" dans lequel on ajoute les valeurs du produit
     let productInformation = {
       productId: `${currentProduct._id}`,
       productName: `${currentProduct.name}`,
@@ -74,62 +76,38 @@ document.addEventListener("click", function (event) {
 
     addProductInLocalStorage(productInformation);
 
-    // ----- Partie localStorage -----
+    // ----- PARTIE LOCALSTORAGE -----
 
-    // 1* MEGAAAAAAAA ESSAIIIIIIIIIIIIIIIIIIIIIIIII !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //
-
-    // Déclaration d'une variable dans laquelle il y a les clés/valeurs du localStorage
-
-    // 2) Fonction pour ajouter un produit dans le localStorage
+    // Fonction pour ajouter un produit dans le localStorage
     function addProductInLocalStorage(productInformation) {
       // Déclaration d'une variable dans laquelle il y a les clés/valeurs du localStorage
       let productSaveInLocalStorage = JSON.parse(
-        localStorage.getItem("product")
+        localStorage.getItem(`${productInformation.productName}`)
       );
+
       // Si il y a déjà un/des produit(s) dans le localStorage
       if (productSaveInLocalStorage != null) {
-        // Et si
+        // Mais que la clé `${productInformation.productName}` n'existe pas
         if (
-          productSaveInLocalStorage[productInformation.productName] == undefined
+          localStorage.getItem(`${productInformation.productName}`) == undefined
         ) {
           productSaveInLocalStorage = {
             ...productSaveInLocalStorage,
-            [productInformation.productName]: productInformation,
+            productInformation,
           };
         }
-        productSaveInLocalStorage[
-          productInformation.productName
-        ].numberOfProduct += 1;
-      } else {
-        productInformation.numberOfProduct = 1;
-        productSaveInLocalStorage = {
-          [productInformation.productName]: productInformation,
-        };
+        // Si la clé `${productInformation.productName}` exite alors
+        productSaveInLocalStorage.numberOfProduct += 1;
       }
-
+      // Si le localStorage est vide
+      else {
+        productInformation.numberOfProduct = 1;
+        productSaveInLocalStorage = productInformation;
+      }
       localStorage.setItem(
-        "product",
+        `${productInformation.productName}`,
         JSON.stringify(productSaveInLocalStorage)
       );
-
-      // productInformation.numberOfProduct = 1;
-
-      // productSaveInLocalStorage.push(productInformation);
-      // localStorage.setItem(
-      //   "product",
-      //   JSON.stringify(productSaveInLocalStorage)
-      // );
     }
-
-    // // Si il y a déjà un/des produit(s) dans le localStorage
-    // if (productSaveInLocalStorage) {
-    //   addProductInLocalStorage();
-    // }
-    // // Si il n'y a pas de produit enregistré dans le localStorage
-    // else {
-    //   productSaveInLocalStorage = [];
-    //   addProductInLocalStorage();
-    // }
   }
 });

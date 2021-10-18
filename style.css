@@ -70,3 +70,6 @@ a:hover {
 main {
   background-color: rgb(222, 222, 222);
 }
+.bouton_panier {
+  width: 33px;
+}

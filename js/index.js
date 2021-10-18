@@ -34,7 +34,7 @@ function displayTeddys(value) {
     }).format(price);
 
     teddyBears.innerHTML += `
-      <div class="col">
+      <div class="col-sm-12 col-md-4">
         <div class="card"><a href="produit.html?_id=${teddy._id}">
           <div class="card-body">
             <img src="${teddy.imageUrl}" alt="${teddy.name}" class="img-fluid img-thumbnail">
